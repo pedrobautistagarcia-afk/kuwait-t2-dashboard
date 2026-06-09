@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stand Occupancy Dashboard — Kuwait T2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@600;700&display=swap');
+
+  :root {
+    --bg: #f8f9fb;
+    --surface: #ffffff;
+    --border: #e2e6ec;
+    --text: #1a2033;
+    --muted: #6b7585;
+    --ef-light: #86efac;
+    --ef-dark: #14532d;
+    --c-color: #1e40af;
+    --accent: #e63946;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Barlow', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--text);
+    color: #fff;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header .title { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  header .subtitle { font-size: 12px; color: #9ca3b0; margin-top: 2px; }
+
+  .controls {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .control-group { display: flex; align-items: center; gap: 8px; }
+  .control-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+
+  .btn-group { display: flex; gap: 4px; }
+  .btn {
+    padding: 6px 14px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--text); color: var(--text); }
+  .btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+
+  select {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border);
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    background: white;
+    cursor: pointer;
+  }
+
+  .main { padding: 28px 32px; max-width: 1300px; margin: 0 auto; }
+
+  .legend-bar {
+    display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .legend-dot { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+
+  .chart-wrap { position: relative; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); padding: 24px 24px 16px; }
+  canvas { max-height: 480px; }
+
+  /* TABLE */
+  .table-wrap { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--text); color: #fff; }
+  thead th { padding: 10px 16px; text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.7px; cursor: pointer; user-select: none; white-space: nowrap; }
+  thead th:hover { background: #2d3550; }
+  thead th .sort-icon { margin-left: 4px; opacity: 0.5; }
+  thead th.sorted .sort-icon { opacity: 1; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:hover { background: #f0f4ff; }
+  tbody td { padding: 9px 16px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .badge-ef { background: #dcfce7; color: #14532d; }
+  .badge-c  { background: #dbeafe; color: #1e3a8a; }
+  .bar-cell { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; max-width: 120px; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+
+  .info-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .info-box strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="title">Stand Occupancy Dashboard — Kuwait International Airport T2</div>
+    <div class="subtitle">16 August 2025 · Peak day · 48 half-hour slots · All contact stands</div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="control-group">
+    <span class="control-label">View</span>
+    <div class="btn-group">
+      <button class="btn active" id="btn-chart" onclick="showView('chart')">Chart</button>
+      <button class="btn" id="btn-table" onclick="showView('table')">Table</button>
+    </div>
+  </div>
+  <div class="control-group">
+    <span class="control-label">Stand type</span>
+    <div class="btn-group">
+      <button class="btn active" id="filter-all" onclick="setFilter('all')">All</button>
+      <button class="btn" id="filter-ef" onclick="setFilter('ef')">E/F only</button>
+      <button class="btn" id="filter-c" onclick="setFilter('c')">Type C only</button>
+    </div>
+  </div>
+  <div class="control-group">
+    <span class="control-label">Sort by</span>
+    <select id="sort-select" onchange="setSort(this.value)">
+      <option value="real">Real utilisation</option>
+      <option value="presence">Presence</option>
+      <option value="stand">Stand number</option>
+    </select>
+  </div>
+</div>
+
+<div class="main">
+  <div class="legend-bar">
+    <div class="legend-item"><div class="legend-dot" style="background:#86efac;"></div>E/F — presence (≥1 aircraft)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#14532d;"></div>E/F — real utilisation</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1e40af;"></div>Type C — utilisation</div>
+  </div>
+
+  <div class="chart-wrap" id="chart-view" style="display:block;">
+    <canvas id="myChart" style="width:100%;height:460px;"></canvas>
+  </div>
+
+  <div class="table-wrap" id="table-view" style="display:none;">
+    <table id="data-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable('stand')">Stand <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('type')">Type <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('presence')">Presence <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('real')">Real utilisation <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('wide')">Wide-body slots <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('narrow')">Single narrow slots <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('double')">Double narrow slots <span class="sort-icon">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>Presence (≥1 aircraft):</strong> % of 48 slots where at least one aircraft was on stand. &nbsp;|&nbsp;
+    <strong>Real utilisation:</strong> % of total available positions used — E/F stands have 2 positions × 48 slots = 96. A wide-body or 2 narrow-body aircraft = 2 positions; 1 narrow-body = 1 position. For Type C stands (1 position), both metrics are identical.
+  </div>
+</div>
+
+<script>
+const raw = [
+  {stand:'232',type:'E/F',presence:100.0,real:88.5,wide:0, narrow:11,dbl:37},
+  {stand:'229',type:'E/F',presence:97.9, real:70.8,wide:0, narrow:26,dbl:21},
+  {stand:'230',type:'E/F',presence:93.8, real:71.9,wide:0, narrow:21,dbl:24},
+  {stand:'225',type:'E/F',presence:91.7, real:79.2,wide:15,narrow:12,dbl:17},
+  {stand:'227',type:'E/F',presence:91.7, real:79.2,wide:21,narrow:12,dbl:11},
+  {stand:'231',type:'E/F',presence:91.7, real:79.2,wide:0, narrow:12,dbl:32},
+  {stand:'224',type:'E/F',presence:89.6, real:60.4,wide:5, narrow:28,dbl:10},
+  {stand:'223',type:'E/F',presence:87.5, real:86.5,wide:37,narrow:1, dbl:4},
+  {stand:'228',type:'E/F',presence:85.4, real:85.4,wide:40,narrow:0, dbl:1},
+  {stand:'226',type:'E/F',presence:79.2, real:75.0,wide:25,narrow:4, dbl:9},
+  {stand:'209',type:'E/F',presence:75.0, real:75.0,wide:35,narrow:0, dbl:1},
+  {stand:'215',type:'E/F',presence:75.0, real:65.6,wide:21,narrow:9, dbl:6},
+  {stand:'216',type:'E/F',presence:64.6, real:63.5,wide:20,narrow:1, dbl:10},
+  {stand:'214',type:'E/F',presence:62.5, real:53.1,wide:9, narrow:9, dbl:12},
+  {stand:'207',type:'E/F',presence:56.2, real:55.2,wide:20,narrow:1, dbl:6},
+  {stand:'210',type:'E/F',presence:56.2, real:56.2,wide:26,narrow:0, dbl:1},
+  {stand:'208',type:'E/F',presence:50.0, real:50.0,wide:23,narrow:0, dbl:1},
+  {stand:'213',type:'E/F',presence:43.8, real:43.8,wide:20,narrow:0, dbl:1},
+  {stand:'211',type:'E/F',presence:37.5, real:37.5,wide:17,narrow:0, dbl:1},
+  {stand:'212',type:'E/F',presence:25.0, real:25.0,wide:11,narrow:0, dbl:1},
+  {stand:'206',type:'E/F',presence:20.8, real:11.5,wide:0, narrow:9, dbl:1},
+  {stand:'236',type:'C',  presence:93.8, real:93.8, wide:0,narrow:45,dbl:0},
+  {stand:'237',type:'C',  presence:89.6, real:89.6, wide:0,narrow:43,dbl:0},
+  {stand:'234',type:'C',  presence:85.4, real:85.4, wide:0,narrow:41,dbl:0},
+  {stand:'235',type:'C',  presence:79.2, real:79.2, wide:0,narrow:38,dbl:0},
+  {stand:'201',type:'C',  presence:72.9, real:72.9, wide:0,narrow:35,dbl:0},
+  {stand:'202',type:'C',  presence:70.8, real:70.8, wide:0,narrow:34,dbl:0},
+  {stand:'204',type:'C',  presence:68.8, real:68.8, wide:0,narrow:33,dbl:0},
+  {stand:'205',type:'C',  presence:62.5, real:62.5, wide:0,narrow:30,dbl:0},
+  {stand:'203',type:'C',  presence:54.2, real:54.2, wide:0,narrow:26,dbl:0},
+];
+
+let currentFilter = 'all';
+let currentSort = 'real';
+let chart = null;
+
+function filtered() {
+  return raw.filter(d => {
+    if (currentFilter === 'ef') return d.type === 'E/F';
+    if (currentFilter === 'c')  return d.type === 'C';
+    return true;
+  });
+}
+
+function sorted(data) {
+  return [...data].sort((a,b) => {
+    if (currentSort === 'stand') return parseInt(a.stand) - parseInt(b.stand);
+    if (currentSort === 'presence') return b.presence - a.presence;
+    return b.real - a.real;
+  });
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ['all','ef','c'].forEach(x => document.getElementById('filter-'+x).classList.toggle('active', x===f));
+  renderChart(); renderTable();
+}
+
+function setSort(s) {
+  currentSort = s;
+  renderChart(); renderTable();
+}
+
+function showView(v) {
+  document.getElementById('chart-view').style.display = v==='chart' ? 'block' : 'none';
+  document.getElementById('table-view').style.display = v==='table'  ? 'block' : 'none';
+  document.getElementById('btn-chart').classList.toggle('active', v==='chart');
+  document.getElementById('btn-table').classList.toggle('active', v==='table');
+  if (v==='chart') renderChart();
+  if (v==='table') renderTable();
+}
+
+function sortTable(col) {
+  currentSort = col;
+  document.getElementById('sort-select').value = ['real','presence','stand'].includes(col) ? col : currentSort;
+  renderChart(); renderTable();
+}
+
+function renderChart() {
+  const data = sorted(filtered());
+  const labels = data.map(d => d.stand);
+  const presenceData = data.map(d => d.type === 'C' ? null : d.presence);
+  const realData     = data.map(d => d.real);
+  const realColors   = data.map(d => d.type === 'C' ? '#1e40af' : '#14532d');
+
+  if (chart) chart.destroy();
+  const ctx = document.getElementById('myChart').getContext('2d');
+  chart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[
+      {
+        label:'Presence (≥1 aircraft)',
+        data: presenceData,
+        backgroundColor:'#86efac',
+        borderWidth:0, borderRadius:3,
+        order:2, skipNull:true
+      },
+      {
+        label:'Real utilisation',
+        data: realData,
+        backgroundColor: realColors,
+        borderWidth:0, borderRadius:3,
+        order:1
+      }
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{
+          title:(i)=>{
+            const d = data[i[0].dataIndex];
+            return `Stand ${d.stand} (${d.type})`;
+          },
+          label:(i)=>`${i.dataset.label}: ${i.raw}%`,
+          afterBody:(i)=>{
+            const d = data[i[0].dataIndex];
+            if (d.type==='E/F') return [
+              `Wide-body slots: ${d.wide}`,
+              `Single narrow slots: ${d.narrow}`,
+              `Double narrow slots: ${d.dbl}`
+            ];
+            return [`Slots occupied: ${d.narrow}`];
+          }
+        }, titleFont:{family:'Barlow',size:13,weight:'600'}, bodyFont:{family:'Barlow',size:12},
+          padding:12, backgroundColor:'rgba(20,30,50,0.92)' }
+      },
+      scales:{
+        x:{ grid:{display:false}, ticks:{font:{family:'Barlow',size:11},color:'#6b7585'}, border:{display:false} },
+        y:{ min:0, max:105, grid:{color:'#e2e6ec'}, border:{display:false},
+            ticks:{font:{family:'Barlow',size:11},color:'#6b7585',stepSize:20,callback:v=>v+'%'} }
+      },
+      interaction:{mode:'index'}
+    }
+  });
+}
+
+function renderTable() {
+  const data = sorted(filtered());
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  data.forEach(d => {
+    const tr = document.createElement('tr');
+    const presBar = d.type==='E/F' ? `<div class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${d.presence}%;background:#86efac;"></div></div><span>${d.presence}%</span></div>` : `<span style="color:#9ca3af;font-size:12px;">—</span>`;
+    const realColor = d.type==='C' ? '#1e40af' : '#14532d';
+    const realBar = `<div class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${d.real}%;background:${realColor};"></div></div><span>${d.real}%</span></div>`;
+    const badge = d.type==='E/F' ? `<span class="badge badge-ef">E/F</span>` : `<span class="badge badge-c">C</span>`;
+    const wideCell  = d.type==='E/F' ? d.wide  : '—';
+    const narrowCell= d.narrow;
+    const dblCell   = d.type==='E/F' ? d.dbl   : '—';
+    tr.innerHTML = `<td><strong>${d.stand}</strong></td><td>${badge}</td><td>${presBar}</td><td>${realBar}</td><td>${wideCell}</td><td>${narrowCell}</td><td>${dblCell}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+renderChart();
+renderTable();
+</script>
+</body>
+</html>
