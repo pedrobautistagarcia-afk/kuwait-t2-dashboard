@@ -570,6 +570,17 @@ main {
       <p>The number of aircraft on stand builds progressively from the overnight baseline of 24 at 00:00, reaching its peak of 33 at 07:00 before declining as the morning wave of departures clears the apron. Starting from a minimum of 19 aircraft on stand — a level sustained for only 30 minutes — demand remains high throughout the day. Between 20 and 24 aircraft are simultaneously on stand for 11.5 hours. This rises to 25–27 aircraft for 6 hours, and to 28–32 aircraft for a further 5.5 hours.</p>
       <p>The peak of 33 aircraft on stand is reached for only 30 minutes, confirming that the highest demand levels are short-lived. The wide-body peak of 14 aircraft occurs at 06:30, driven almost exclusively by Kuwait Airways long-haul inbound services.</p>
     </div>
+
+    <div class="chart-card" style="margin-bottom:24px;">
+      <div class="cc-title">Aircraft on Stand Heatmap by Airline and Hour</div>
+      <div class="cc-sub">Colour intensity scaled independently per airline group</div>
+      <div id="heatmap-s1" style="margin-top:12px;"></div>
+      <div class="legend" style="margin-top:12px;">
+        <div class="legend-item"><div class="legend-dot" style="background:#00B0F0;"></div>KAC – Kuwait Airways</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#9BE5F7;"></div>JZR – Jazeera Airways</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f5a623;"></div>OTH – Other Airlines</div>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════════
@@ -663,6 +674,16 @@ main {
         <div style="position:relative;height:340px;"><canvas id="chart-s2-body"></canvas></div>
       </div>
     </div>
+
+    <div class="chart-card" style="margin-bottom:24px;">
+      <div class="cc-title">Aircraft on Stand Heatmap by Airline and Hour</div>
+      <div class="cc-sub">Colour intensity scaled independently per airline group</div>
+      <div id="heatmap-s2" style="margin-top:12px;"></div>
+      <div class="legend" style="margin-top:12px;">
+        <div class="legend-item"><div class="legend-dot" style="background:#00B0F0;"></div>KAC – Kuwait Airways</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f5a623;"></div>OTH – Other Airlines</div>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════════
@@ -733,6 +754,16 @@ main {
         <div class="cc-title">Wide-body vs Narrow-body</div>
         <div class="cc-sub">Simultaneous aircraft by body type</div>
         <div style="position:relative;height:340px;"><canvas id="chart-s3-body"></canvas></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-bottom:24px;">
+      <div class="cc-title">Aircraft on Stand Heatmap by Airline and Hour</div>
+      <div class="cc-sub">Colour intensity scaled independently per airline group · LCC & cargo excluded</div>
+      <div id="heatmap-s3" style="margin-top:12px;"></div>
+      <div class="legend" style="margin-top:12px;">
+        <div class="legend-item"><div class="legend-dot" style="background:#00B0F0;"></div>KAC – Kuwait Airways</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f5a623;"></div>OTH – Other Airlines</div>
       </div>
     </div>
   </div>
@@ -978,6 +1009,16 @@ function renderChartsFor(id) {
       options:{...DEF_OPTS(),plugins:{...DEF_OPTS().plugins,tooltip:{...DEF_OPTS().plugins.tooltip,callbacks:{footer:(i)=>`Total: ${tot[i[0].dataIndex]}`}}},
         scales:{...DEF_OPTS().scales,x:{...DEF_OPTS().scales.x,stacked:true,ticks:{...DEF_OPTS().scales.x.ticks,callback:(v,i)=>SLOTS[i].endsWith(':00')?SLOTS[i]:'',maxRotation:45,minRotation:45}},y:{...DEF_OPTS().scales.y,stacked:true,min:0,max:42}}}
     });
+
+    renderHeatmap('heatmap-s1', [
+      {label:'KAC', data:[11,10,9,9,10,10,11,11,11,11,15,16,17,19,18,18,19,16,11,13,11,8,5,6,6,6,6,8,11,11,12,9,10,6,4,5,6,3,4,4,5,4,7,9,10,9,8,6]},
+      {label:'JZR', data:[7,7,6,7,7,7,8,6,8,6,5,5,7,6,9,10,8,7,9,6,11,9,9,7,5,6,7,7,7,6,4,7,9,8,8,11,7,7,8,8,9,9,8,6,4,3,3,4]},
+      {label:'OTH', data:[6,4,4,7,8,10,12,13,10,8,8,5,5,6,6,4,4,5,6,6,8,11,10,13,12,11,10,6,8,5,7,5,7,9,9,11,13,10,11,12,10,9,12,9,10,10,12,13]},
+    ], [19, 11, 13], [
+      {low:[224,240,255], high:[0,176,240]},
+      {low:[200,240,250], high:[0,176,240]},
+      {low:[254,243,199], high:[180,83,9]},
+    ]);
     new Chart(document.getElementById('chart-s1-cum'), {
       type:'line',
       data:{ labels:cum_s1_x, datasets:[{data:cum_s1_y,borderColor:'#2a6099',backgroundColor:'rgba(100,170,220,0.12)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#2a6099',tension:0.3,fill:true}]},
@@ -1017,6 +1058,14 @@ function renderChartsFor(id) {
       options:{...DEF_OPTS(),plugins:{...DEF_OPTS().plugins,tooltip:{...DEF_OPTS().plugins.tooltip,callbacks:{footer:(i)=>`Total: ${tot[i[0].dataIndex]}`}}},
         scales:{...DEF_OPTS().scales,x:{...DEF_OPTS().scales.x,stacked:true,ticks:{...DEF_OPTS().scales.x.ticks,callback:(v,i)=>SLOTS[i].endsWith(':00')?SLOTS[i]:'',maxRotation:45,minRotation:45}},y:{...DEF_OPTS().scales.y,stacked:true,min:0,max:42}}}
     });
+
+    renderHeatmap('heatmap-s2', [
+      {label:'KAC', data:[11,10,9,9,10,10,11,11,11,11,15,16,17,19,18,18,19,16,11,13,11,8,5,6,6,6,6,8,11,11,12,9,10,6,4,5,6,3,4,4,5,4,7,9,10,9,8,6]},
+      {label:'OTH', data:[6,4,4,7,8,10,12,13,10,8,8,5,5,6,6,4,4,5,6,6,8,11,10,13,12,11,10,6,8,5,7,5,7,9,9,11,13,10,11,12,10,9,12,9,10,10,12,13]},
+    ], [19, 13], [
+      {low:[224,240,255], high:[0,176,240]},
+      {low:[254,243,199], high:[180,83,9]},
+    ]);
     new Chart(document.getElementById('chart-s2-cum'), {
       type:'line',
       data:{ labels:cum_s2_x, datasets:[{data:cum_s2_y,borderColor:'#2a6099',backgroundColor:'rgba(100,170,220,0.12)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#2a6099',tension:0.3,fill:true}]},
@@ -1056,6 +1105,14 @@ function renderChartsFor(id) {
       options:{...DEF_OPTS(),plugins:{...DEF_OPTS().plugins,tooltip:{...DEF_OPTS().plugins.tooltip,callbacks:{footer:(i)=>`Total: ${tot[i[0].dataIndex]}`}}},
         scales:{...DEF_OPTS().scales,x:{...DEF_OPTS().scales.x,stacked:true,ticks:{...DEF_OPTS().scales.x.ticks,callback:(v,i)=>SLOTS[i].endsWith(':00')?SLOTS[i]:'',maxRotation:45,minRotation:45}},y:{...DEF_OPTS().scales.y,stacked:true,min:0,max:42}}}
     });
+
+    renderHeatmap('heatmap-s3', [
+      {label:'KAC', data:[11,10,9,9,10,10,11,11,11,11,15,16,17,19,18,18,19,16,11,13,11,8,5,6,6,6,6,8,11,11,12,9,10,6,4,5,6,3,4,4,5,4,7,9,10,9,8,6]},
+      {label:'OTH', data:[5,3,3,5,5,6,8,8,8,6,6,4,3,4,4,2,2,3,3,2,3,5,6,8,9,7,7,4,5,3,5,4,5,6,6,7,8,5,5,7,7,7,9,7,8,9,11,11]},
+    ], [19, 11], [
+      {low:[224,240,255], high:[0,176,240]},
+      {low:[254,243,199], high:[180,83,9]},
+    ]);
     new Chart(document.getElementById('chart-s3-cum'), {
       type:'line',
       data:{ labels:cum_s3_x, datasets:[{data:cum_s3_y,borderColor:'#2a6099',backgroundColor:'rgba(100,170,220,0.12)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#2a6099',tension:0.3,fill:true}]},
@@ -1117,6 +1174,48 @@ function closeLightbox(e) {
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+
+// ── HEATMAP RENDERER ──
+function renderHeatmap(canvasId, datasets, maxVals, colors) {
+  const container = document.getElementById(canvasId);
+  if (!container) return;
+
+  const slots = ['00:00','00:30','01:00','01:30','02:00','02:30','03:00','03:30','04:00','04:30',
+    '05:00','05:30','06:00','06:30','07:00','07:30','08:00','08:30','09:00','09:30',
+    '10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30',
+    '15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30',
+    '20:00','20:30','21:00','21:30','22:00','22:30','23:00','23:30'];
+
+  function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+  function cellBg(low, high, val, maxVal) {
+    const t = Math.min(val / maxVal, 1);
+    return `rgb(${lerp(low[0],high[0],t)},${lerp(low[1],high[1],t)},${lerp(low[2],high[2],t)})`;
+  }
+  function textCol(val, maxVal) { return (val/maxVal) > 0.5 ? '#fff' : '#374151'; }
+
+  let html = '<div style="overflow-x:auto;"><table style="border-collapse:collapse;width:100%;">';
+  // Header row
+  html += '<tr><td style="width:48px;"></td>';
+  slots.forEach(s => {
+    html += `<td style="width:20px;height:18px;font-size:8px;color:#94a3b8;text-align:center;padding:0;vertical-align:bottom;">${s.endsWith(':00')?s.replace(':00',''):''}`;
+    html += '</td>';
+  });
+  html += '</tr>';
+
+  datasets.forEach((ds, di) => {
+    html += `<tr><td style="font-size:11px;font-weight:700;color:#374151;padding-right:8px;white-space:nowrap;">${ds.label}</td>`;
+    ds.data.forEach((val, i) => {
+      const bg = cellBg(colors[di].low, colors[di].high, val, maxVals[di]);
+      const tc = textCol(val, maxVals[di]);
+      html += `<td title="${ds.label} · ${slots[i]} · ${val}" style="width:20px;height:22px;background:${bg};font-size:8px;font-weight:700;color:${tc};text-align:center;padding:0;border-radius:2px;cursor:default;">${val||''}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</table></div>';
+  container.innerHTML = html;
+}
 
 // Init
 chartsRendered['overview'] = true;
