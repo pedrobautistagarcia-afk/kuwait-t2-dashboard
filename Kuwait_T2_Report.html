@@ -421,7 +421,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Aircraft on Stand — All Scenarios</div>
       <div class="cc-sub">Hourly maximum of 30-minute slots · Peak reference day 16 August 2025</div>
-      <canvas id="chart-comparison" style="height:360px;"></canvas>
+      <div style="position:relative;height:340px;"><div style="position:relative;height:360px;"><canvas id="chart-comparison"></canvas></div></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--kac);"></div>Scenario 1 — All Airlines</div>
         <div class="legend-item"><div class="legend-dot" style="background:#2a8ab5;"></div>Scenario 2 — No JZR</div>
@@ -448,7 +448,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Aircraft on Stand per 30-minute Slot</div>
       <div class="cc-sub">KAC · JZR · OTH · Peak: 33 aircraft at 07:00</div>
-      <canvas id="chart-s1-occ" style="height:340px;"></canvas>
+      <div style="position:relative;height:340px;"><canvas id="chart-s1-occ"></canvas></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--kac);"></div>KAC – Kuwait Airways</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--jzr);"></div>JZR – Jazeera Airways</div>
@@ -460,12 +460,12 @@ main {
       <div class="chart-card">
         <div class="cc-title">Cumulative Occupancy Curve</div>
         <div class="cc-sub">Hours of day at each occupancy level</div>
-        <canvas id="chart-s1-cum" style="height:280px;"></canvas>
+        <div style="position:relative;height:340px;"><canvas id="chart-s1-cum"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="cc-title">Wide-body vs Narrow-body</div>
         <div class="cc-sub">Simultaneous aircraft by body type</div>
-        <canvas id="chart-s1-body" style="height:280px;"></canvas>
+        <div style="position:relative;height:340px;"><canvas id="chart-s1-body"></canvas></div>
       </div>
     </div>
 
@@ -493,7 +493,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Arrivals vs Departures</div>
       <div class="cc-sub">Hourly maximum of 30-minute slots · Combined peak: 15 at 10:00, 17:00 and 19:00</div>
-      <canvas id="chart-s1-mov" style="height:320px;"></canvas>
+      <div style="position:relative;height:340px;"><canvas id="chart-s1-mov"></canvas></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--kac);"></div>Arrivals</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--oth);"></div>Departures</div>
@@ -539,7 +539,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Aircraft on Stand per 30-minute Slot</div>
       <div class="cc-sub">KAC · OTH · Peak: 25 aircraft at 06:30</div>
-      <canvas id="chart-s2-occ" style="height:340px;"></canvas>
+      <div style="position:relative;height:340px;"><canvas id="chart-s2-occ"></canvas></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--kac);"></div>KAC – Kuwait Airways</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--oth);"></div>OTH – Other Airlines</div>
@@ -550,12 +550,12 @@ main {
       <div class="chart-card">
         <div class="cc-title">Cumulative Occupancy</div>
         <div class="cc-sub">Hours of day at each occupancy level</div>
-        <canvas id="chart-s2-cum" style="height:280px;"></canvas>
+        <div style="position:relative;height:340px;"><canvas id="chart-s2-cum"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="cc-title">Wide-body vs Narrow-body</div>
         <div class="cc-sub">Simultaneous aircraft by body type</div>
-        <canvas id="chart-s2-body" style="height:280px;"></canvas>
+        <div style="position:relative;height:340px;"><canvas id="chart-s2-body"></canvas></div>
       </div>
     </div>
   </div>
@@ -577,7 +577,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Arrivals vs Departures</div>
       <div class="cc-sub">Hourly maximum · Combined peak: 12 at 18:00</div>
-      <canvas id="chart-s2-mov" style="height:320px;"></canvas>
+      <div style="position:relative;height:340px;"><canvas id="chart-s2-mov"></canvas></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--kac);"></div>Arrivals</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--oth);"></div>Departures</div>
@@ -603,7 +603,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Aircraft on Stand per 30-minute Slot</div>
       <div class="cc-sub">KAC · OTH · Peak: 23 aircraft at 06:30</div>
-      <canvas id="chart-s3-occ" style="height:340px;"></canvas>
+      <div style="position:relative;height:340px;"><canvas id="chart-s3-occ"></canvas></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--kac);"></div>KAC – Kuwait Airways</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--oth);"></div>OTH – Other Airlines</div>
@@ -614,12 +614,12 @@ main {
       <div class="chart-card">
         <div class="cc-title">Cumulative Occupancy</div>
         <div class="cc-sub">Hours of day at each occupancy level</div>
-        <canvas id="chart-s3-cum" style="height:280px;"></canvas>
+        <div style="position:relative;height:340px;"><canvas id="chart-s3-cum"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="cc-title">Wide-body vs Narrow-body</div>
         <div class="cc-sub">Simultaneous aircraft by body type</div>
-        <canvas id="chart-s3-body" style="height:280px;"></canvas>
+        <div style="position:relative;height:340px;"><canvas id="chart-s3-body"></canvas></div>
       </div>
     </div>
   </div>
@@ -641,7 +641,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Arrivals vs Departures</div>
       <div class="cc-sub">Hourly maximum · Combined peak: 10 at 15:00 and 18:00</div>
-      <canvas id="chart-s3-mov" style="height:320px;"></canvas>
+      <div style="position:relative;height:340px;"><canvas id="chart-s3-mov"></canvas></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--kac);"></div>Arrivals</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--oth);"></div>Departures</div>
@@ -685,7 +685,7 @@ main {
     <div class="chart-card">
       <div class="cc-title">Real Capacity Utilisation — All Contact Stands</div>
       <div class="cc-sub">E/F: % of 96 total position-slots used · Type C: % of 48 slots occupied</div>
-      <canvas id="chart-stands" style="height:400px;"></canvas>
+      <div style="position:relative;height:340px;"><canvas id="chart-stands"></canvas></div>
       <div class="legend">
         <div class="legend-item"><div class="legend-dot" style="background:#86efac;"></div>E/F — presence (≥1 aircraft)</div>
         <div class="legend-item"><div class="legend-dot" style="background:#14532d;"></div>E/F — real utilisation</div>
